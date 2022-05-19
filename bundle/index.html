@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="icon.png" type="image/png">
+    <title>Welcome To NoCSS</title>
+    <title>Document</title>
+    <style>
+        #app {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .controll_tab {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: white;
+        }
+        
+        .hide {
+            display: none;
+        }
+        
+        .output_wrap {
+            position: absolute;
+            background-color: rgb(255, 255, 255);
+            width: 100vw;
+            height: 100vh;
+            top: 0vh;
+            left: 0vw;
+            border-radius: 0px;
+            overflow: scroll;
+            text-overflow: ellipsis;
+            display: flex;
+            flex-direction: row;
+        }
+        
+         ::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+        /* Track */
+        
+         ::-webkit-scrollbar-track {}
+        /* Handle */
+        
+         ::-webkit-scrollbar-thumb {
+            /*滚动条里面小方块*/
+            border-radius: 12px;
+            border: 5px solid rgba(255, 255, 255, 1);
+            background: lightgray;
+        }
+        
+        .code_wrap {
+            width: 44%;
+            height: 97%;
+            margin-left: 1%;
+            margin-top: 1%;
+            padding-left: 20px;
+            padding-top: 15px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+            overflow-y: scroll;
+            outline: 1px solid rgba(0, 0, 0, 0);
+            transition: all 0.3s;
+        }
+        
+        .code_wrap:hover {
+            outline: 1px solid rgba(0, 0, 0, 0.507);
+        }
+        
+        .design_wrap {
+            width: 54%;
+            height: 97%;
+            margin-left: 1%;
+            margin-top: 1%;
+            padding-top: 15px;
+            padding-left: 15px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+            overflow-y: scroll;
+            outline: 1px solid rgba(0, 0, 0, 0);
+            transition: all 0.3s;
+        }
+        
+        .design_wrap:hover {
+            outline: 1px solid rgba(0, 0, 0, 0.507);
+        }
+        
+        #submit {
+            width: 100px;
+            height: 35px;
+            border: 2px solid black;
+            overflow: hidden;
+            border-radius: 5px;
+            position: relative;
+            background-color: white;
+        }
+        
+        #submit:hover {
+            cursor: pointer;
+        }
+        
+        #submit>input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        
+        #submit>span {
+            font-size: 20px;
+            padding-left: 10px;
+        }
+        
+        #fontsize {
+            border: 2px solid black;
+            height: 34px;
+            width: 65px;
+            border-radius: 5px;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .tip {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+        
+        .suppose {
+            margin-top: 20px;
+            width: 50vw;
+            height: fit-content;
+            word-break: break-all;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
+        .hiden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="font-mono">
+        <layout></layout>
+        <div class="controll_tab" v-show="hide">
+            <dom></dom>
+            <cssom></cssom>
+        </div>
+
+        <div style="white-space: pre;" class="output_wrap " v-show="out">
+            <div class="code_wrap" v-text="con">
+            </div>
+            <div class="design_wrap">
+                <div style="display: flex; flex-direction: row;">
+                    <input id="fontsize" type="text" name="" id="" style="margin-right: 10px;">
+                    <div id="submit">
+                        <span>picture</span>
+                        <input type="file" onchange="getImg(event)" />
+                    </div>
+                </div>
+                <img id="showImg" src="" alt="" style="max-height: 50vw; height: auto;">
+                <div class="tip ">
+                    <div>you may need these style</div>
+                    <div class="suppose">trbl:</div>
+                    <div class="suppose">margin:</div>
+                    <div class="suppose">space_between:</div>
+                    <div class="suppose">padding:</div>
+                    <div class="suppose">width:</div>
+                    <div class="suppose">height:</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="bundle.js"></script>
+<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    let size;
+    let option_list = []
+    let trbl = ["top-", "right-", "bottom-", "left-"]
+    let margin = ["mt-", "mr-", "mb-", "ml-"]
+    let space_between = ["space-x-", "space-y-"]
+    let padding = ["pt-", "pr-", "pb-", "pl-"]
+    let width = ["w-"]
+    let height = ["h-"]
+
+    function getImg(event) {
+        let val = document.getElementById("fontsize").value
+        if (val == null) {
+            alert("give the fontsize first")
+        } else {
+            var imageBase = "";
+            var reader = new FileReader();
+            var res = '';
+            reader.readAsDataURL(event.target.files[0]);
+            reader.onload = function(e) {
+                console.log(e.target.result)
+                imageBase = e.target.result.replace("data:image/png;base64,", "");
+                $("#showImg").prop("src", "data:image/png;base64," + imageBase);
+
+                $.ajax({
+                    header: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    type: "post",
+                    url: "https://aip.baidubce.com/rest/2.0/ocr/v1/webimage",
+
+                    data: {
+                        access_token: "24.ed696f68f730837d534bdeba589d3422.2592000.1648287638.282335-25659689",
+                        image: imageBase,
+
+                    },
+                    // crossDomain:true,
+                    dataType: "json",
+                    //timeout: 30000,
+                    success: function(data) {
+                        console.log("解析成功");
+                        console.log(data);
+                        size = data.words_result;
+                        compute(size, parseInt(val))
+                    },
+                    error: function(xhr) {
+                        console.log("请求解析失败");
+                    }
+                });
+            }
+        }
+    }
+
+
+    function compute(size, fontsize) {
+        let list = []
+        for (let i = 0; i < size.length; i++) {
+            if (size[i].words.includes("px")) {
+                let rem = (size[i].words.slice(0, size[i].words.length - 2)) / fontsize
+                let num = rem / 0.25
+                list.push(num)
+            }
+        }
+        for (let i = 0; i < trbl.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${trbl[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[0].innerHTML += option_list;
+        option_list = []
+        for (let i = 0; i < margin.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${margin[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[1].innerHTML += option_list
+        option_list = []
+        for (let i = 0; i < space_between.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${space_between[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[2].innerHTML += option_list
+        option_list = []
+        for (let i = 0; i < padding.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${padding[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[3].innerHTML += option_list
+        option_list = []
+
+        for (let i = 0; i < width.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${width[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[4].innerHTML += option_list
+        option_list = []
+
+        for (let i = 0; i < height.length; i++) {
+            for (let j = 0; j < list.length; j++) {
+                option_list.push(`"${height[i]}${list[j]}"`)
+            }
+        }
+        document.getElementsByClassName("suppose")[5].innerHTML += option_list
+        document.getElementsByClassName("tip")[0].classList.remove("hiden")
+    }
+</script>
+
+</html>

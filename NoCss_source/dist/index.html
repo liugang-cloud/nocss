@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .controll_tab {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: white;
+        }
+        
+        .hide {
+            display: none;
+        }
+        
+        .output_wrap {
+            position: absolute;
+            background-color: rgb(255, 255, 255);
+            width: 100vw;
+            height: 100vh;
+            top: 0vh;
+            left: 0vw;
+            border: 2px solid black;
+            border-radius: 5px;
+            padding-left: 2px;
+            padding-top: 1px;
+            overflow: scroll;
+            text-overflow: ellipsis;
+        }
+        
+         ::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+        /* Track */
+        
+        ::-webkit-scrollbar-track {}
+        /* Handle */
+        
+        ::-webkit-scrollbar-thumb {
+            /*滚动条里面小方块*/
+            border-radius: 12px;
+            border: 5px solid rgba(255, 255, 255, 1);
+            background: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="font-mono">
+        <layout></layout>
+        <div class="controll_tab" v-show="hide">
+            <dom></dom>
+            <cssom></cssom>
+        </div>
+
+        <div style="white-space: pre;" class="output_wrap " v-show="out" v-text="con">
+
+        </div>
+
+    </div>
+</body>
+<script src="./dist/bundle.js"></script>
+<script>
+</script>
+
+</html>
